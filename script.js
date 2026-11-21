@@ -136,7 +136,7 @@ window.addEventListener("load", resetPageScroll);
       if (preloader.parentNode) preloader.remove();
     }
 
-    window.setTimeout(dismissPreloader, 300);
+    window.setTimeout(dismissPreloader, 200);
   }
 
   function markContentImages() {
@@ -1290,7 +1290,7 @@ window.addEventListener("load", resetPageScroll);
     opts = opts || {};
     closeMenu();
     var tab = findAppTab(tabId || "home");
-    var panels = document.querySelectorAll("[data-app-tab]");
+    var panels = document.querySelectorAll(".app-tab-panel[data-app-tab]");
     var animate = opts.animate !== false && !reduceMotion;
     panels.forEach(function (panel) {
       var on = panel.getAttribute("data-app-tab") === tab.id;
