@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Мебель на заказ</title>
+  <meta id="meta-desc" name="description" content="Мебель под архитектуру квартиры — свой цех и цена, которая не растёт после замера">
+  <meta id="theme-color" name="theme-color" content="#C26D3A">
+  <meta property="og:title" content="Мебельная студия «ЛИНИЯ» — мебель на заказ">
+  <meta property="og:description" content="Мебель под архитектуру квартиры — свой цех и цена, которая не растёт после замера">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ru_RU">
+  <link rel="icon" id="favicon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23C26D3A'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+  <link href="https://fonts.bunny.net/css?family=inter:400,500,600|manrope:500,600,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./vendor/lenis.css">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="site-preloader" id="site-preloader" role="status" aria-live="polite" aria-busy="true" aria-label="Подготовка прототипа">
+    <div class="site-preloader__inner">
+      <div class="site-preloader__track" aria-hidden="true"><span class="site-preloader__bar"></span></div>
+      <p class="site-preloader__label">PALIGENIX · ПОДГОТОВКА ПРОТОТИПА</p>
+    </div>
+  </div>
+  <div class="read-progress" id="read-progress" aria-hidden="true"><span></span></div>
+  <div class="demo-cover" id="demo-cover" hidden>
+    <div class="demo-cover-inner wrap">
+      <p class="demo-badge" id="demo-badge"></p>
+      <h1 class="demo-title" id="demo-title"></h1>
+      <ul class="demo-tags" id="demo-tags"></ul>
+      <button class="btn btn-primary magnetic demo-open" type="button" data-action="demo-open" id="demo-cta"></button>
+      <p class="demo-agency" id="demo-agency" hidden>
+        <span class="demo-agency__rule" aria-hidden="true"></span>
+        <span class="demo-agency__text">✦ Прототип и разработка: PALIGENIX</span>
+        <span class="demo-agency__rule" aria-hidden="true"></span>
+      </p>
+    </div>
+  </div>
+  <a class="skip" href="#main" id="skip-link">К содержанию</a>
+  <header class="header" id="header"></header>
+  <div class="nav-panel" id="nav-panel"></div>
+  <main id="main" class="app-main">
+    <div class="app-tab-panel is-active" data-app-tab="home" id="app-panel-home">
+      <section class="hero" id="hero"></section>
+    </div>
+    <div class="app-tab-panel" data-app-tab="catalog" id="app-panel-catalog" hidden>
+      <section class="section" id="categories"></section>
+      <section class="section" id="calculator"></section>
+    </div>
+    <div class="app-tab-panel" data-app-tab="portfolio" id="app-panel-portfolio" hidden>
+      <section class="section" id="portfolio"></section>
+    </div>
+    <div class="app-tab-panel" data-app-tab="about" id="app-panel-about" hidden>
+      <section class="section" id="steps"></section>
+      <section class="section" id="reviews"></section>
+      <section class="section" id="final"></section>
+    </div>
+  </main>
+  <div class="app-tab-panel" data-app-tab="contacts" id="app-panel-contacts" hidden>
+    <footer id="contacts"></footer>
+  </div>
+  <nav class="app-tabbar" id="app-tabbar" aria-label="Навигация по разделам"></nav>
+  <div class="dock" id="dock"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <div id="modal-root" class="modal__overlay" hidden data-lenis-prevent></div>
+  <div id="privacy-root" class="modal__overlay" hidden data-lenis-prevent></div>
+  <div id="admin-root" class="modal__overlay" hidden data-lenis-prevent></div>
+  <template id="consent-doc">
+    <h2>Согласие на обработку персональных данных</h2>
+    <p>Редакция 19 ноября 2026</p>
+    <p>Я, оставляя заявку на сайте мебельной студии, свободно, своей волей и в своём интересе даю согласие ИП *************** (ИНН ************, ОГРНИП ***************) на обработку моих персональных данных: имени и номера телефона.</p>
+    <p>Цель обработки — связаться со мной, подготовить расчёт мебели, организовать замер и исполнение договора. С данными совершаются запись, хранение, уточнение и удаление.</p>
+    <p>Заявка хранится в браузере на этом устройстве. Если владелец подключил Telegram или таблицу Google, копия заявки уходит и туда. Иных получателей у данных нет.</p>
+    <p>Согласие действует до его отзыва. Отозвать согласие можно сообщением в Telegram или WhatsApp, указанные на сайте. Отзыв не отменяет обработку, которую нужно продолжить по уже заключённому договору.</p>
+    <p>Состав данных, сроки и порядок удаления описаны в Политике конфиденциальности.</p>
+  </template>
+  <noscript>
+    <p class="noscript">Включите JavaScript: без него не откроются проекты, калькулятор и заявка.</p>
+  </noscript>
+  <script src="./vendor/lenis.min.js"></script>
+  <script src="./config.js"></script>
+  <script src="./script.js"></script>
+</body>
+</html>
