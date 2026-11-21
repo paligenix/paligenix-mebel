@@ -121,6 +121,7 @@ window.addEventListener("load", resetPageScroll);
     if (dock) dock.innerHTML = dockHTML();
     mountAppTabbar();
     paintDemoCover();
+    markContentImages();
   }
 
   function setupPreloader() {
@@ -132,18 +133,28 @@ window.addEventListener("load", resetPageScroll);
       preloaderDismissed = true;
       preloader.classList.add("is-hidden");
       preloader.setAttribute("aria-busy", "false");
-      window.setTimeout(function () {
-        if (preloader.parentNode) preloader.remove();
-      }, 450);
+      if (preloader.parentNode) preloader.remove();
     }
 
-    if (reduceMotion) {
-      dismissPreloader();
-      return;
-    }
+    window.setTimeout(dismissPreloader, 300);
+  }
 
-    window.setTimeout(dismissPreloader, 750);
-    window.setTimeout(dismissPreloader, 1500);
+  function markContentImages() {
+    document.querySelectorAll(".media img").forEach(function (img) {
+      if (img.getAttribute("data-img-bound") === "1") return;
+      img.setAttribute("data-img-bound", "1");
+      if (!img.getAttribute("loading")) img.setAttribute("loading", "lazy");
+      img.setAttribute("decoding", "async");
+      img.addEventListener(
+        "error",
+        function onImgError() {
+          img.classList.add("is-img-error");
+          img.removeAttribute("src");
+          img.removeEventListener("error", onImgError);
+        },
+        { once: true }
+      );
+    });
   }
 
   function setupDemoCover() {
@@ -216,7 +227,15 @@ window.addEventListener("load", resetPageScroll);
 
   function panelHTML() {
     var c = cfg.contacts;
+    var tabs = appTabs().map(function (tab) {
+      return (
+        '<button class="nav-panel__tab" type="button" data-action="app-tab" data-tab="' + esc(tab.id) + '"' +
+          ' data-app-tab="' + esc(tab.id) + '">' + esc(tab.label) + "</button>"
+      );
+    }).join("");
     return (
+      '<nav class="nav-panel__nav" aria-label="' + esc(ui.footerNav) + '">' + tabs + "</nav>" +
+      '<div class="nav-panel__divider" role="presentation"></div>' +
       '<div class="nav-panel__actions">' +
         (c.phoneTel
           ? '<a class="nav-panel__link" href="tel:' + esc(c.phoneTel) + '">' + esc(c.phone) + "</a>"
@@ -229,8 +248,10 @@ window.addEventListener("load", resetPageScroll);
   }
 
   function navLinks() {
-    return cfg.nav.map(function (item) {
-      return '<a href="' + esc(item.href) + '">' + esc(item.label) + '</a>';
+    return appTabs().map(function (tab) {
+      return (
+        '<a href="#' + esc(tab.hash) + '" data-nav-tab="' + esc(tab.id) + '">' + esc(tab.label) + "</a>"
+      );
     }).join("");
   }
 
@@ -253,7 +274,7 @@ window.addEventListener("load", resetPageScroll);
           '<div class="hero-reveal d5"><div class="bullets">' + bullets + '</div></div>' +
         '</div>' +
         '<figure class="hero-reveal d4 hero-media">' +
-          '<div class="media"><img data-parallax src="' + esc(h.image) + '" alt="' + esc(h.imageAlt) + '" width="1200" height="1500"></div>' +
+          '<div class="media"><img data-parallax src="' + esc(h.image) + '" alt="' + esc(h.imageAlt) + '" width="1200" height="1500" decoding="async" fetchpriority="high"></div>' +
           '<figcaption>' + esc(h.imageCaption) + '</figcaption>' +
         '</figure>' +
       '</div>'
@@ -393,8 +414,8 @@ window.addEventListener("load", resetPageScroll);
     var b = cfg.brand;
     var c = cfg.contacts;
     var year = new Date().getFullYear();
-    var links = cfg.nav.map(function (item) {
-      return '<li><a class="footer__nav-link" href="' + esc(item.href) + '">' + esc(item.label) + '</a></li>';
+    var links = appTabs().map(function (tab) {
+      return '<li><a class="footer__nav-link" href="#' + esc(tab.hash) + '">' + esc(tab.label) + "</a></li>";
     }).join("");
     return (
       '<div class="wrap footer-grid">' +
@@ -1242,23 +1263,23 @@ window.addEventListener("load", resetPageScroll);
     document.documentElement.classList.add("app-tabs-mode");
   }
 
-  function resetUrlHashOnLoad() {
-    if (!location.hash) return;
-    history.replaceState(null, "", window.location.pathname + window.location.search);
-  }
-
   function initAppTabs() {
     if (!appTabState.bound) {
       window.addEventListener("popstate", function () {
         var next = tabIdFromHash(location.hash) || appTabState.active;
         switchAppTab(next, { history: false, animate: true });
       });
+      window.addEventListener("hashchange", function () {
+        var next = tabIdFromHash(location.hash);
+        if (!next) return;
+        switchAppTab(next, { history: false, animate: true });
+      });
       appTabState.bound = true;
     }
     if (!appTabState.inited) {
-      resetUrlHashOnLoad();
       appTabState.inited = true;
-      switchAppTab("home", { history: false, animate: false });
+      var startTab = tabIdFromHash(location.hash) || "home";
+      switchAppTab(startTab, { history: false, animate: false });
       resetPageScroll();
       return;
     }
@@ -1288,7 +1309,7 @@ window.addEventListener("load", resetPageScroll);
     if (opts.history !== false) {
       var targetHash = "#" + tab.hash;
       if (location.hash !== targetHash) {
-        history.pushState({ appTab: tab.id }, "", targetHash);
+        history.replaceState({ appTab: tab.id }, "", targetHash);
       }
     }
     onAppTabOpen(tab.id);
@@ -1309,6 +1330,12 @@ window.addEventListener("load", resetPageScroll);
       btn.setAttribute("aria-selected", on ? "true" : "false");
       btn.tabIndex = on ? 0 : -1;
     });
+    document.querySelectorAll(".nav-panel__tab[data-app-tab]").forEach(function (btn) {
+      var on = btn.getAttribute("data-app-tab") === activeId;
+      btn.classList.toggle("is-active", on);
+      if (on) btn.setAttribute("aria-current", "page");
+      else btn.removeAttribute("aria-current");
+    });
   }
 
   function onAppTabOpen(tabId) {
@@ -1316,6 +1343,7 @@ window.addEventListener("load", resetPageScroll);
     appTabState.visited[tabId] = true;
     window.dispatchEvent(new Event("resize"));
     var panel = document.querySelector('[data-app-tab="' + tabId + '"]');
+    markContentImages();
     if (!panel) return;
     if (tabId === "portfolio") animateProjectCards();
     refreshPanelMotion(panel);
